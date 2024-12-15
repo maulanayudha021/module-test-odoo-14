@@ -48,6 +48,84 @@ Fields: name
 GET /api/materials
 Returns all materials.
 
+Response Example:
+```
+{
+    "jsonrpc": "2.0",
+    "id": null,
+    "result": [
+        {
+            "id": 5,
+            "material_code": "MAT001",
+            "material_name": "Fabric Material",
+            "material_type": "fabric",
+            "material_buy_price": 150.0,
+            "supplier": {
+                "id": 1,
+                "name": "YourCompany",
+                "create_date": "2024-12-15 07:06:06",
+                "display_name": "YourCompany",
+                "lang": "en_US",
+                "website": "http://www.example.com",
+                "function": false,
+                "type": "contact",
+                "street": "250 Executive Park Blvd, Suite 3400",
+                "street2": false,
+                "zip": "94134",
+                "city": "San Francisco",
+                "partner_latitude": 0.0,
+                "partner_longitude": 0.0,
+                "email": "myudha317@gmail.com",
+                "phone": "082246718208",
+                "is_company": true,
+                "commercial_partner_id": 1,
+                "commercial_company_name": "YourCompany"
+            }
+        }
+    ]
+}
+```
+
+2. Get Single Material
+GET /api/materials/<id>
+Returns a single material.
+
+Response Example:
+```
+{
+    "jsonrpc": "2.0",
+    "id": null,
+    "result": {
+        "id": 9,
+        "material_code": "MAT005",
+        "material_name": "Cotton Material",
+        "material_type": "cotton",
+        "material_buy_price": 150.0,
+        "supplier": {
+            "id": 1,
+            "name": "YourCompany",
+            "create_date": "2024-12-15 07:06:06",
+            "display_name": "YourCompany",
+            "lang": "en_US",
+            "website": "http://www.example.com",
+            "function": false,
+            "type": "contact",
+            "street": "250 Executive Park Blvd, Suite 3400",
+            "street2": false,
+            "zip": "94134",
+            "city": "San Francisco",
+            "partner_latitude": 0.0,
+            "partner_longitude": 0.0,
+            "email": "myudha317@gmail.com",
+            "phone": "082246718208",
+            "is_company": true,
+            "commercial_partner_id": 1,
+            "commercial_company_name": "YourCompany"
+        }
+    }
+}
+```
+
 2. Create Material
 POST /api/materials
 Creates a new material.
