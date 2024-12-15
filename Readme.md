@@ -17,14 +17,7 @@ Additionally, users can perform the following operations:
 ## Entity-Relationship Diagram (ERD)
 The ERD consists of the following entities:
 
-### Material Management
-
-Fields: material_code, material_name, material_type, material_buy_price, supplier_id.
-Supplier
-
-### Res Partner (For Supplier)
-
-Fields: name
+![alt text](https://github.com/maulanayudha021/module-test-odoo-14/blob/main/erd.png?raw=true)
 
 ## Features
 1. Material CRUD Operations
