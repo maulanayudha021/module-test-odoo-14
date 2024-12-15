@@ -164,65 +164,108 @@ Payload Example:
 ## Unit Testing
 ### Test Cases
 The following test cases ensure the module's functionality:
+- Test Supplier Creation
 - Test Material Creation
-- Ensure material is created with valid data.
-- Verify material_buy_price < 100 fails validation.
-- Test Fetching Materials
-- Retrieve all materials.
-- Apply filters to return materials of a specific type.
+- Test Get All Material
+- Test Other Material Creation
+- Test Invalid Buy Price
 - Test Updating Materials
-- Validate updates are applied correctly.
-- Ensure updates fail for non-existent materials.
 - Test Deleting Materials
-- Verify deletion of an existing material.
-- Attempt deletion of non-existent materials.
+- Test Material Filter
+- Test Supplier Relation with Material
 
-## Example Unit Test Code
+## Unit Test Code
 ```
 from odoo.tests.common import TransactionCase
+from odoo.exceptions import ValidationError
 
 class TestMaterialManagement(TransactionCase):
     def setUp(self):
         super(TestMaterialManagement, self).setUp()
-        self.supplier = self.env['res.partner'].create({'name': 'Test Supplier'})
+
+        # Create a test supplier with realistic data based on the res.partner structure
+        self.supplier = self.env['res.partner'].create({
+            'name': 'Test Supplier',
+            'email': 'test_supplier@example.com',
+            'phone': '1234567890',
+            'is_company': True,
+            'street': '123 Test Street',
+            'city': 'Test City',
+            'zip': '12345',
+            'country_id': self.env.ref('base.us').id,
+            'active': True,
+        })
+        print('Create Data Supplier OK')
+
+        # Create a test material
         self.material = self.env['material.management'].create({
             'material_code': 'MAT001',
             'material_name': 'Test Material',
-            'material_type': 'Fabric',
+            'material_type': 'fabric',
             'material_buy_price': 150,
-            'supplier_id': self.supplier.id
+            'supplier_id': self.supplier.id,
         })
+        print('Create Data Material OK')
+
+    def test_get_all_materials(self):
+        """Test retrieving all materials."""
+        all_materials = self.env['material.management'].search([])
+        self.assertIn(self.material, all_materials)
+        self.assertGreaterEqual(len(all_materials), 1)
+        print('Get All Material OK')
 
     def test_material_creation(self):
+        """Test the creation of a material."""
         material = self.env['material.management'].create({
             'material_code': 'MAT002',
-            'material_name': 'Another Material',
-            'material_type': 'Cotton',
+            'material_name': 'New Material',
+            'material_type': 'jeans',
             'material_buy_price': 200,
-            'supplier_id': self.supplier.id
+            'supplier_id': self.supplier.id,
         })
         self.assertEqual(material.material_code, 'MAT002')
+        self.assertEqual(material.material_buy_price, 200)
+        print('Create Other Data Material OK')
 
     def test_material_buy_price_validation(self):
-        with self.assertRaises(Exception):
+        """Test that material_buy_price cannot be less than 100."""
+        with self.assertRaises(ValidationError):
             self.env['material.management'].create({
                 'material_code': 'MAT003',
                 'material_name': 'Invalid Material',
-                'material_type': 'Jeans',
-                'material_buy_price': 50,
-                'supplier_id': self.supplier.id
+                'material_type': 'cotton',
+                'material_buy_price': 50,  # Invalid value
+                'supplier_id': self.supplier.id,
             })
+        print('Invalid Buy Price Validation OK')
 
-    def test_filter_materials(self):
-        materials = self.env['material.management'].search([('material_type', '=', 'Fabric')])
-        self.assertTrue(len(materials) > 0)
-
-    def test_update_material(self):
-        self.material.write({'material_name': 'Updated Material'})
+    def test_material_update(self):
+        """Test updating an existing material."""
+        self.material.write({
+            'material_name': 'Updated Material',
+            'material_buy_price': 250,
+        })
         self.assertEqual(self.material.material_name, 'Updated Material')
+        self.assertEqual(self.material.material_buy_price, 250)
+        print('Update Data Material OK')
 
-    def test_delete_material(self):
+    def test_material_deletion(self):
+        """Test deleting a material."""
+        material_id = self.material.id
         self.material.unlink()
-        materials = self.env['material.management'].search([('id', '=', self.material.id)])
-        self.assertEqual(len(materials), 0)
+        material = self.env['material.management'].search([('id', '=', material_id)])
+        self.assertFalse(material)
+        print('Delete Data Material OK')
+
+    def test_material_filter_by_type(self):
+        """Test filtering materials by type."""
+        fabric_materials = self.env['material.management'].search([('material_type', '=', 'fabric')])
+        self.assertIn(self.material, fabric_materials)
+        print('Filter Data Material OK')
+
+    def test_supplier_relation(self):
+        """Test the relation between material and supplier."""
+        self.assertEqual(self.material.supplier_id, self.supplier)
+        self.assertEqual(self.material.supplier_id.name, 'Test Supplier')
+        print('Test Supplier Relation With Material OK')
 ```
