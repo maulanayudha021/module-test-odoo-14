@@ -269,3 +269,5 @@ class TestMaterialManagement(TransactionCase):
         self.assertEqual(self.material.supplier_id.name, 'Test Supplier')
         print('Test Supplier Relation With Material OK')
 ```
+
+![alt text](https://github.com/maulanayudha021/module-test-odoo-14/blob/main/unit_testing.png?raw=true)
